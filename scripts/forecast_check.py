@@ -71,7 +71,8 @@ def compare(forecasts: pd.DataFrame, actual: pd.DataFrame) -> pd.DataFrame:
 
 def report(c: pd.DataFrame) -> str:
     if c.empty:
-        return "### Forecast check\n\nNo months after the forecast origin are available from Lichess yet."
+        return ("### Forecast check\n\nNo months after the forecast origin are available from the Lichess opening "
+                "explorer yet (it runs a few months behind). The check will run again next month.")
     months = sorted(c.month.unique())
     lines = ["### Forecast check", "",
              f"Forecasts made from data up to {c.origin.iloc[0]}; real values now available for "
@@ -92,7 +93,9 @@ def fetch_actual(ex: Explorer, since: str, until: str) -> pd.DataFrame:
     for label in ["Start position", *OPENINGS]:
         for r in ex.history(to_uci(sans[label]), RATING_GROUPS["all"], since, until):
             rows.append({"position": label, "month": r["month"], "games": r["white"] + r["draws"] + r["black"]})
-    a = pd.DataFrame(rows)
+    a = pd.DataFrame(rows, columns=["position", "month", "games"])
+    if a.empty:  # the explorer runs a few months behind, so there may be nothing after the forecast origin yet
+        return pd.DataFrame(columns=["position", "month", "share"])
     total = a[a.position == "Start position"].set_index("month").games
     a = a[(a.position != "Start position") & a.month.isin(total[total > 0].index)]
     return a.assign(share=lambda x: x.games / x.month.map(total) * 100)[["position", "month", "share"]]

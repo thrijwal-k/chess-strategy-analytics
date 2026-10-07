@@ -53,3 +53,15 @@ def test_fetch_actual_turns_counts_into_shares():
     a = fc.fetch_actual(FakeExplorer(), "2026-06", "2026-07")
     e4 = a[a.position == "1.e4"]
     assert e4.share.round(6).tolist() == [58.0, 58.0] and "Start position" not in set(a.position)
+
+
+class EmptyExplorer:
+    def history(self, play, ratings, since, until):
+        return []
+
+
+def test_no_new_months_yet_is_reported_not_an_error():
+    a = fc.fetch_actual(EmptyExplorer(), "2026-06", "2026-10")
+    assert a.empty and list(a.columns) == ["position", "month", "share"]
+    c = fc.compare(pd.read_csv(fc.FORECASTS), a)
+    assert c.empty and "No months after the forecast origin" in fc.report(c)
