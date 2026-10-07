@@ -37,7 +37,7 @@ jobs:
       - run: pip install "ruff>=0.5"
       - run: ruff check . --output-format=github
       - name: Lint the Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@v3.5.0
         with:
           dockerfile: Dockerfile
 
