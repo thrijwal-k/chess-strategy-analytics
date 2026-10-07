@@ -36,7 +36,7 @@ jobs:
       - name: Fetch the newest months and compare
         if: env.LICHESS_TOKEN != ''
         run: python scripts/forecast_check.py check --out forecast_check.csv --summary "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: env.LICHESS_TOKEN != ''
         with:
           name: forecast-check

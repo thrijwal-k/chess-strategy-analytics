@@ -71,7 +71,7 @@ jobs:
           for name, m in json.load(open("models/metrics.json")).items():
               print(f"| {name} | {m['test_games']:,} | {m['accuracy']:.1%} | {m['log_loss']:.3f} |")
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: matrix.python-version == '3.12'
         with:
           name: coverage
