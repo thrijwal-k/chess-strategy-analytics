@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Large or downloaded data: everything under data/ except the opening catalogue (CC0, 400 KB)
+data/*
+!data/openings/
+
+# Local outputs
+results/
+reports/
+out/
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc

@@ -1,0 +1,14 @@
+{
+  "pregame": {
+    "train_games": 600000,
+    "test_games": 50000,
+    "accuracy": 0.54832,
+    "log_loss": 0.8083899782262444
+  },
+  "ingame20": {
+    "train_games": 600000,
+    "test_games": 50000,
+    "accuracy": 0.65198,
+    "log_loss": 0.7497044372580209
+  }
+}

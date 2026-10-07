@@ -1,0 +1,13 @@
+{
+  "features": {
+    "diff": 1,
+    "mean": 0,
+    "spd": 0,
+    "mat": 1,
+    "wclk": 1,
+    "bclk": -1,
+    "base": 0,
+    "inc": 0
+  },
+  "sklearn": "1.8.0"
+}

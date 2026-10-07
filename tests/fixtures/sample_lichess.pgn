@@ -1,0 +1,65 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/AAAA0001"]
+[Date "2020.10.24"]
+[White "player_a"]
+[Black "player_b"]
+[Result "1-0"]
+[UTCDate "2020.10.24"]
+[UTCTime "10:00:00"]
+[WhiteElo "1850"]
+[BlackElo "1790"]
+[ECO "A80"]
+[Opening "Dutch Defense"]
+[TimeControl "180+2"]
+[Termination "Normal"]
+
+1. d4 { [%eval 0.17] [%clk 0:03:00] } 1... f5 { [%eval 0.6] [%clk 0:03:00] } 2. Bf4 { [%eval 0.5] [%clk 0:02:58] } 2... Nf6 { [%eval 0.55] [%clk 0:02:59] } 3. e3 { [%eval 0.4] [%clk 0:02:57] } 3... e6 { [%eval 0.45] [%clk 0:02:58] } 4. Nf3 { [%eval 0.35] [%clk 0:02:55] } 4... Be7?! { [%eval 0.9] [%clk 0:02:50] } 5. Bd3 { [%eval 0.8] [%clk 0:02:52] } 5... O-O { [%eval 0.85] [%clk 0:02:48] } 6. O-O { [%eval 0.7] [%clk 0:02:50] } 1-0
+
+[Event "Rated Rapid game"]
+[Site "https://lichess.org/AAAA0002"]
+[Date "2021.03.02"]
+[White "player_c"]
+[Black "player_d"]
+[Result "0-1"]
+[UTCDate "2021.03.02"]
+[UTCTime "18:30:00"]
+[WhiteElo "2105"]
+[BlackElo "2160"]
+[ECO "B90"]
+[Opening "Sicilian Defense: Najdorf Variation"]
+[TimeControl "600+0"]
+[Termination "Normal"]
+
+1. e4 { [%eval 0.2] [%clk 0:10:00] } 1... c5 { [%eval 0.3] [%clk 0:10:00] } 2. Nf3 { [%eval 0.25] [%clk 0:09:58] } 2... d6 { [%eval 0.3] [%clk 0:09:57] } 3. d4 { [%eval 0.3] [%clk 0:09:55] } 3... cxd4 { [%eval 0.3] [%clk 0:09:56] } 4. Nxd4 { [%eval 0.3] [%clk 0:09:54] } 4... Nf6 { [%eval 0.3] [%clk 0:09:55] } 5. Nc3 { [%eval 0.3] [%clk 0:09:52] } 5... a6 { [%eval 0.35] [%clk 0:09:50] } 6. Bc4?? { [%eval #-2] [%clk 0:09:40] } 6... Qb6 { [%eval #-1] [%clk 0:09:30] } 0-1
+
+[Event "Rated Classical game"]
+[Site "https://lichess.org/AAAA0003"]
+[Result "1/2-1/2"]
+[UTCDate "2019.01.05"]
+[WhiteElo "1600"]
+[BlackElo "1620"]
+[TimeControl "1800+20"]
+[Termination "Normal"]
+
+1. d4 d5 2. c4 $1 e6 (2... c6 3. Nf3) 3. Nc3 Nf6 4. Bg5 Be7 ; a rest-of-line comment
+5. e3 O-O 6. Nf3 h6 1/2-1/2
+
+[Event "Casual Bullet game"]
+[Site "https://lichess.org/AAAA0004"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[WhiteElo "?"]
+[BlackElo "1500"]
+[TimeControl "60+0"]
+
+1.e4 c6 2.d4 d5 3.e5 Bf5 0-1
+
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/AAAA0005"]
+[Result "*"]
+[UTCDate "2024.12.31"]
+[WhiteElo "1400"]
+[BlackElo "1410"]
+[TimeControl "-"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 *

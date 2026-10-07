@@ -1,0 +1,5 @@
+model,test_games,log_loss,rps,accuracy
+No information (overall result rates),500000,0.8375882899709278,0.24931582975442054,0.494708
+Ratings only (rating-gap table),500000,0.8083510180253177,0.23674778629079027,0.54998
+Gradient boosting: ratings and speed,500000,0.807119584315144,0.23669548908690824,0.550158
+Gradient boosting: + White system and Black defence,500000,0.8067948611535418,0.23653661454169614,0.551496

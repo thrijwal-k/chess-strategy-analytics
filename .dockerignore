@@ -1,0 +1,11 @@
+*
+!app.py
+!requirements-app.txt
+!src/chessanalytics/__init__.py
+!src/chessanalytics/explainer.py
+!src/chessanalytics/boards.py
+!src/chessanalytics/models.py
+!models/
+!docs/RESULTS.md
+!docs/knowledge/
+!docs/tables/

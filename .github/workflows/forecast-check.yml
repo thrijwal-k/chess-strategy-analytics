@@ -1,0 +1,43 @@
+name: Monthly forecast check
+
+# Compares the opening-share forecasts in docs/tables/forecasts.csv with the newest months from the Lichess
+# opening explorer. Needs a Lichess token saved as the repository secret LICHESS_TOKEN
+# (Settings > Secrets and variables > Actions); without it the job only explains how to add one.
+
+on:
+  schedule:
+    - cron: "17 6 10 * *"  # 06:17 UTC on the 10th of every month
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Forecasts against real months
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LICHESS_TOKEN: ${{ secrets.LICHESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: No token
+        if: env.LICHESS_TOKEN == ''
+        run: |
+          echo "### Forecast check skipped" >> "$GITHUB_STEP_SUMMARY"
+          echo "Add a Lichess token as the repository secret LICHESS_TOKEN to run it." >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/setup-python@v5
+        if: env.LICHESS_TOKEN != ''
+        with:
+          python-version: "3.12"
+          cache: pip
+      - if: env.LICHESS_TOKEN != ''
+        run: pip install pandas numpy statsmodels chess
+      - name: Fetch the newest months and compare
+        if: env.LICHESS_TOKEN != ''
+        run: python scripts/forecast_check.py check --out forecast_check.csv --summary "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: env.LICHESS_TOKEN != ''
+        with:
+          name: forecast-check
+          path: forecast_check.csv

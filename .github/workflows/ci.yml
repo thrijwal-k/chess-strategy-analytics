@@ -1,0 +1,233 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      llm_eval:
+        description: "Also evaluate the explainer with a real local model (Ollama, free, about 10 minutes)"
+        type: boolean
+        default: false
+      llm_model:
+        description: "Ollama model to evaluate"
+        default: "llama3.2:1b"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "ruff>=0.5"
+      - run: ruff check . --output-format=github
+      - name: Lint the Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install -r requirements.txt pytest-cov
+      - name: Unit, property and dashboard tests with coverage
+        run: python -m pytest -q --cov=chessanalytics --cov-report=term --cov-report=xml
+      - name: Coverage and model summary
+        if: matrix.python-version == '3.12'
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          import xml.etree.ElementTree as ET
+          r = ET.parse("coverage.xml").getroot()
+          print(f"### Test coverage: {float(r.get('line-rate')) * 100:.1f}% of lines in src/chessanalytics")
+          print("### Saved models on held-out November 2020 games")
+          print("| Model | Test games | Accuracy | Log loss |\n|---|---|---|---|")
+          for name, m in json.load(open("models/metrics.json")).items():
+              print(f"| {name} | {m['test_games']:,} | {m['accuracy']:.1%} | {m['log_loss']:.3f} |")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: matrix.python-version == '3.12'
+        with:
+          name: coverage
+          path: coverage.xml
+
+  pipeline:
+    name: Pipeline smoke test
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Extract, features, setups, endgames, clocks and lite copy on the sample games
+        run: python scripts/smoke_pipeline.py
+
+  dashboard:
+    name: Dashboard smoke test
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-app.txt
+      - name: Start the dashboard and check it responds
+        env:
+          EXPLAINER_NO_LLM: "1"
+        run: |
+          streamlit run app.py --server.headless=true --server.port=8501 > streamlit.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8501/_stcore/health; then echo " healthy after ${i}s"; break; fi
+            sleep 1
+          done
+          curl -fsS http://localhost:8501/_stcore/health
+          curl -fsS http://localhost:8501/ | grep -q "<title>"
+      - name: Server log on failure
+        if: failure()
+        run: cat streamlit.log
+
+  explainer-llm:
+    name: Explainer with a real model (manual)
+    needs: test
+    if: github.event_name == 'workflow_dispatch' && inputs.llm_eval
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-app.txt pyyaml
+      - name: Install Ollama and pull the model
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve > ollama.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://localhost:11434/api/tags > /dev/null && break; sleep 1; done
+          ollama pull "${{ inputs.llm_model }}"
+      - name: Ask every question in the evaluation set
+        run: python scripts/eval_explainer_llm.py --model "${{ inputs.llm_model }}" --report "$GITHUB_STEP_SUMMARY"
+
+  docker:
+    name: Build and test image
+    needs: [pipeline, dashboard]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: chess-dashboard:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Run the container and check it becomes healthy
+        run: |
+          docker run -d --name dash -p 8501:8501 chess-dashboard:ci
+          for i in $(seq 1 60); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' dash)
+            if [ "$status" = "healthy" ]; then echo "healthy after ${i}s"; break; fi
+            sleep 1
+          done
+          test "$(docker inspect --format '{{.State.Health.Status}}' dash)" = "healthy"
+          curl -fsS http://localhost:8501/_stcore/health
+          user=$(docker inspect --format '{{.Config.User}}' dash)
+          test -n "$user" && test "$user" != "root" && test "$user" != "0"
+          echo "### Container: healthy, runs as a non-root user, $(docker image inspect chess-dashboard:ci --format '{{.Size}}' | awk '{printf "%.0f MB", $1/1e6}')" >> "$GITHUB_STEP_SUMMARY"
+      - name: Container log on failure
+        if: failure()
+        run: docker logs dash || true
+
+  publish:
+    name: Publish image to GHCR
+    needs: docker
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=short
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+      - name: Summary
+        run: |
+          {
+            echo "### Published"
+            echo '```'
+            echo "${{ steps.meta.outputs.tags }}"
+            echo '```'
+            echo "Run it: \`docker run -p 8501:8501 ${{ env.IMAGE }}:latest\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  release:
+    name: GitHub release
+    needs: publish
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bundle results and figures
+        run: zip -r results-${{ github.ref_name }}.zip docs/RESULTS.md docs/figures docs/tables
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: results-${{ github.ref_name }}.zip
+          generate_release_notes: true
+          body: |
+            Results, figures and tables for ${{ github.ref_name }}.
+            Dashboard image: `docker run -p 8501:8501 ghcr.io/${{ github.repository }}:${{ github.ref_name }}`

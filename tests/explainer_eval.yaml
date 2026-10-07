@@ -1,0 +1,42 @@
+# Evaluation set for the explainer. "expect" lists passage titles; at least one must be among the sources returned.
+# "numbers" must appear in the answer (they come from the tables). "out_of_scope" questions must be refused.
+questions:
+  - {q: "What is the London System?", expect: ["London System"]}
+  - {q: "Is the London good against the Dutch?", expect: ["London System against Dutch"], numbers: ["12,309", "+0.8 pp"]}
+  - {q: "London vs King's Indian", expect: ["London System against King's Indian Defence"], numbers: ["-2.2 pp"]}
+  - {q: "Does the London work better for weaker players?", expect: ["London System by rating"]}
+  - {q: "How good is the Caro-Kann for Black?", expect: ["Caro-Kann Defence"]}
+  - {q: "What is the Queen's Gambit?", expect: ["Queen's Gambit"]}
+  - {q: "Queen's Gambit Accepted vs Queen's Gambit", expect: ["Queen's Gambit against Queen's Gambit Accepted"]}
+  - {q: "Can the Queen's Gambit be played against the King's Gambit?", expect: ["White system and Black defence"]}
+  - {q: "What is a gambit?", expect: ["Gambits"]}
+  - {q: "Why do people sacrifice pawns?", expect: ["Gambits"]}
+  - {q: "What is a fianchetto?", expect: ["Fianchetto"]}
+  - {q: "How does a knight move?", expect: ["The pieces and how they move"]}
+  - {q: "What is castling?", expect: ["Castling"]}
+  - {q: "What is checkmate?", expect: ["Check, checkmate and resigning"]}
+  - {q: "How can a game end in a draw?", expect: ["How a game can be drawn", "Draw rate"]}
+  - {q: "What is a rating?", expect: ["Ratings"]}
+  - {q: "What is bullet chess?", expect: ["Time controls"]}
+  - {q: "What is a bishop pair?", expect: ["Bishop pair"]}
+  - {q: "What is a knight outpost?", expect: ["Knight outpost"]}
+  - {q: "Are doubled pawns bad?", expect: ["Doubled pawns"]}
+  - {q: "What is an isolated queen pawn?", expect: ["Isolated queen pawn (IQP)"]}
+  - {q: "What is a passed pawn?", expect: ["Passed pawn"]}
+  - {q: "Why do rooks like open files?", expect: ["Open files and the seventh rank"]}
+  - {q: "Why are opposite-coloured bishops drawish?", expect: ["Opposite-coloured bishops"]}
+  - {q: "Are all rook endings drawn?", expect: ["Rook endgames"]}
+  - {q: "What does +1.0 pp mean?", expect: ["Edge and the rating prediction", "Percentage points (pp)"]}
+  - {q: "What is a confidence interval?", expect: ["Confidence interval"]}
+  - {q: "Did the Netflix series change anything?", expect: ["The Queen's Gambit effect"]}
+  - {q: "What happened during lockdown?", expect: ["RQ4 Opening trends, 2013 to 2026"]}
+  - {q: "How accurate are the predictions?", expect: ["Prediction accuracy and log loss", "RQ5 Predicting the result"]}
+  - {q: "What is an engine evaluation?", expect: ["Engine evaluation"]}
+  - {q: "Do clock times matter?", expect: ["Clock times"]}
+  - {q: "What is the capital of France?", out_of_scope: true}
+  - {q: "Who will win the next World Championship?", out_of_scope: true}
+  - {q: "Recommend a good pizza place", out_of_scope: true}
+  - {q: "What time is it in London?", out_of_scope: true}
+  - {q: "Is English hard to learn?", out_of_scope: true}
+  - {q: "Should I play football on Sunday?", out_of_scope: true}
+  - {q: "Write me a poem about cats", out_of_scope: true}

@@ -1,0 +1,6 @@
+# Only what the dashboard needs (keeps the container image small)
+streamlit>=1.50
+altair>=5
+pandas>=2.0
+chess>=1.10
+scikit-learn>=1.8,<1.9  # the saved models in models/ need this minor version

@@ -1,0 +1,13 @@
+[project]
+name = "chess-strategy-analytics"
+version = "0.1.0"
+description = "Openings, middlegame structure, endgames and opening trends in Lichess games"
+requires-python = ">=3.11"
+dependencies = ["chess>=1.10", "zstandard>=0.22", "pandas>=2.0", "pyarrow>=14", "statsmodels>=0.14", "ruptures>=1.1", "matplotlib>=3.8", "scikit-learn>=1.4"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
