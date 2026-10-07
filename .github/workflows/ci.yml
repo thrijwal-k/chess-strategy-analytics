@@ -224,7 +224,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Bundle results and figures
         run: zip -r results-${{ github.ref_name }}.zip docs/RESULTS.md docs/figures docs/tables
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: results-${{ github.ref_name }}.zip
           generate_release_notes: true
