@@ -1,14 +1,24 @@
 version: 2
 updates:
+  # one weekly pull request per ecosystem instead of one per package
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: weekly
-    open-pull-requests-limit: 5
+    groups:
+      python-packages:
+        patterns: ["*"]
+    ignore:
+      # the saved models in models/ need scikit-learn 1.8; upgrade by retraining (scripts/train_models.py)
+      - dependency-name: scikit-learn
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]
   - package-ecosystem: docker
     directory: /
     schedule:
