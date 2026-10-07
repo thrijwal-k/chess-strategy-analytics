@@ -36,14 +36,14 @@ points stronger score 93% (at 300 points: 85% predicted, 79% observed; `docs/tab
 Linear model of White's edge on White-minus-Black feature differences, 2.2 million games with equal material at
 move 20, robust standard errors (Figure 5):
 
-- Knight outpost +2.9 pp, bishop pair +2.6, developed minor piece +1.6, rook on the 7th +1.6, rook on an open file
+- Knight outpost +2.9 pp, bishop pair +2.5, developed minor piece +1.6, rook on the 7th +1.6, rook on an open file
   +1.5, rook on a half-open file +1.4, each extra pawn in the king's shield +0.8, passed pawn +0.5.
 - Pawn islands −0.8, open file next to the king −0.8, doubled pawn −0.6, backward pawn −0.6, isolated queen pawn
   −0.5, king still in the centre −0.4.
 - Measured per typical difference between players, **space** has the largest effect (+2.3 pp per standard
   deviation).
 - The same signs hold for all positions with material differences controlled (1.5 million game sample).
-- In the 5.6% of games with engine analysis, most features do not change the evaluation over the next 10 moves
+- In the 5.8% of games with engine analysis, most features do not change the evaluation over the next 10 moves
   once the evaluation at move 20 is known: the engine already prices them in. Passed pawns and space still help.
 
 These are associations, not causes: stronger play produces good structures as well as wins.
@@ -92,8 +92,8 @@ October to 4.30% in November 2020 (+0.23 pp), 4.8 times the typical monthly chan
 October-to-November change in 2016 to 2025 was between −0.05 and +0.03 pp. The bump was largest among players under
 1600 (+0.40 pp, 5.1 typical changes) and absent above 2000 (+0.06, 1.0), which fits an influx of new players
 inspired by the series. It did not last: the share was back on its long decline by spring 2021, and an interrupted
-time series shows no lasting level change (+0.01 ± 0.11 pp). Placebo tests at other Novembers flag "changes" of a
-similar size in three of six years, so that method is too noisy here to support a stronger claim (Figure 6).
+time series shows no lasting level change (+0.01 ± 0.11 pp). Placebo tests at six other Novembers flag a
+significant "change" in four of them, so that method is too noisy here to support a stronger claim (Figure 6).
 
 **Long-run trends** (share of all games, 2016 to May 2026; Figure 8):
 
@@ -105,8 +105,8 @@ similar size in three of six years, so that method is too noisy here to support 
   openings. That points to changes in who was playing on Lichess (the post-2020 chess boom), not to anything about
   the openings themselves.
 
-**Forecasting.** Rolling-origin backtests on 12 opening shares (12-month horizon, origins every 6 months, 468
-forecasts): ARIMA mean MASE 0.64, ETS 0.65, seasonal naive 0.96. Both models beat the seasonal naive baseline for
+**Forecasting.** Rolling-origin backtests on 12 opening shares (12-month horizon, origins every 6 months, 156
+forecasts per method): ARIMA mean MASE 0.64, ETS 0.65, seasonal naive 0.96. Both models beat the seasonal naive baseline for
 every opening; ARIMA was best for 8 of 12 openings and ETS for 4. Opening shares move slowly and smoothly, so a
 year ahead is forecast with a typical error of about 2.5% of the share (median sMAPE).
 
@@ -127,13 +127,13 @@ played after their training data. Scores: log loss and ranked probability score 
 | No information (overall result rates) | 0.838 | 0.249 | 49.5% |
 | Ratings only (rating-gap table) | 0.808 | 0.237 | 55.0% |
 | Gradient boosting: ratings and speed | 0.807 | 0.237 | 55.0% |
-| + White system and Black defence | 0.807 | 0.237 | 55.2% |
+| + White system and Black defence | 0.807 | 0.237 | 55.1% |
 
 Ratings carry almost all of the information; knowing both sides' openings adds 0.13 points of accuracy, which
 matches RQ1. The model is well calibrated: when it gives White a 70–80% chance, White wins 74% of the time.
 
 **During the game** (`docs/tables/ingame.csv`; Figure 9). Two test sets: a 500,000-game sample of all November
-games, and every November game with engine analysis (the analysis is only available for 5.6% of games). Clock
+games, and every November game with engine analysis (the analysis is only available for 5.8% of games). Clock
 times are each player's time left after their own move, as a share of the starting time.
 
 All games:
@@ -149,7 +149,7 @@ Games with engine analysis:
 | After move | Ratings and speed | + material | + material and clocks | + material and engine | + material, engine and clocks |
 |---|---|---|---|---|---|
 | 15 | 54.1% | 59.5% | 61.4% | 65.0% | 66.7% |
-| 20 | 53.7% | 63.2% | 66.1% | 69.1% | 71.6% |
+| 20 | 53.7% | 63.2% | 66.1% | 69.1% | 71.5% |
 | 25 | 53.1% | 65.9% | 69.7% | 71.5% | 74.7% |
 
 - By move 25 the position predicts the result far better than the ratings do.
@@ -157,7 +157,7 @@ Games with engine analysis:
   on top of material (62.9% to 68.6%; log loss 0.777 to 0.708). Most games are bullet and blitz, where running out
   of time decides many results (32% of the analysed games ended on time).
 - The clocks matter most in fast games. At move 20 they add 8.0 points of accuracy in bullet (59.4% to 67.4%),
-  3.0 in blitz, 0.6 in rapid and 0.2 in classical (`docs/tables/ingame_clocks_by_speed.csv`).
+  3.0 in blitz, 0.6 in rapid and 0.1 in classical (`docs/tables/ingame_clocks_by_speed.csv`).
 - The engine evaluation and the clocks measure different things and add up: with both, 74.7% of engine-analysed
   games are predicted correctly at move 25 (log loss 0.602, against 0.651 with the engine evaluation alone).
 

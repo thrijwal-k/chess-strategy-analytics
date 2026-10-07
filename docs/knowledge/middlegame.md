@@ -35,7 +35,7 @@ side. They control the centre but can be attacked.
 
 ## Bishop pair
 Having both bishops while the opponent does not is called the bishop pair. Together the two bishops cover squares of
-both colours, which is strong in open positions. In this project it is worth about 2.6 percentage points of score.
+both colours, which is strong in open positions. In this project it is worth about 2.5 percentage points of score.
 
 ## Good and bad bishops
 A bishop is called bad when many of its own pawns stand on squares of the same colour as the bishop, blocking it. A

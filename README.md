@@ -9,7 +9,7 @@ popularity and success of openings change month by month from 2013 to 2026, usin
 
 The full research plan is in [docs/PLAN.md](docs/PLAN.md). Results on 9.8 million games, plus monthly trends from
 2013 to 2026, are in [docs/RESULTS.md](docs/RESULTS.md). [analysis/README.md](analysis/README.md) reproduces every
-table and figure. A dissertation-style report will be in `report/`.
+table and figure. The full dissertation-style report is [report/main.pdf](report/main.pdf) (LaTeX source in `report/`).
 
 ## Dashboard
 
@@ -122,7 +122,7 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull request:
 | Stage | What it checks |
 |---|---|
 | Lint | `ruff` on all Python code, `hadolint` on the Dockerfile |
-| Tests | 250 tests on Python 3.11 and 3.12 (including the explainer, board, model and forecast-check tests), with line coverage and the saved models' accuracy in the run summary |
+| Tests | 251 tests on Python 3.11 and 3.12 (including the explainer, board, model and forecast-check tests), with line coverage and the saved models' accuracy in the run summary |
 | Pipeline smoke test | `scripts/smoke_pipeline.py`: extract, features, setup labels, settled endgames, clocks and the lite copy on the sample games; every stage must keep one row per game and the known games must get the right labels |
 | Dashboard smoke test | starts `app.py` (explainer without a model) and checks the health endpoint and the page |
 | Explainer with a real model (manual) | run the workflow by hand with "llm_eval" ticked: installs Ollama on the runner, pulls a small free model and asks every evaluation question |
@@ -158,7 +158,7 @@ instead of written answers.
 | 2 | Middlegame structure and endgame features, run on 10.1 million games | Done |
 | 3 | Monthly opening time series 2013 to 2026, forecasting backtests, change points (lockdown, *The Queen's Gambit*) | Done |
 | 4 | Rating baseline, opening effects, prediction models (before and during the game), dashboard | Done |
-| 5 | Report | Planned |
+| 5 | Report ([report/main.pdf](report/main.pdf)), dashboard, explainer, tested models | Done |
 
 ## What Phase 1 does
 
@@ -185,7 +185,7 @@ evaluations (`[%eval]`, including mate scores) and clock times (`[%clk]`) for ev
 
 ```bash
 pip install -r requirements.txt
-python -m pytest -q                       # 250 tests
+python -m pytest -q                       # 251 tests
 
 # one row per game: ratings, speed, result, named opening, ECO, White system, Black defence
 PYTHONPATH=src python -m chessanalytics.extract tests/fixtures/sample_lichess.pgn --out out/games.csv

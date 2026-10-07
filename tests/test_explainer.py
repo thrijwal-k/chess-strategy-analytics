@@ -55,9 +55,9 @@ def test_invented_numbers_are_caught_and_sources_shown_instead(ex):
 
 
 def test_faithful_generated_answers_are_kept():
-    honest = Explainer(generator=lambda q, ctx: "Having both bishops is worth about 2.6 percentage points [1].")
+    honest = Explainer(generator=lambda q, ctx: "Having both bishops is worth about 2.5 percentage points [1].")
     ans = honest.ask("What is a bishop pair?")
-    assert ans.mode == "generated" and "2.6" in ans.text
+    assert ans.mode == "generated" and "2.5" in ans.text
 
 
 def test_generated_answers_always_show_the_table_figures():
