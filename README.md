@@ -1,6 +1,7 @@
 # Chess Strategy Analytics
 
 [![CI/CD](https://github.com/thrijwal-k/chess-strategy-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/thrijwal-k/chess-strategy-analytics/actions/workflows/ci.yml)
+[![Live demo](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://chess-strategy-analytics.streamlit.app)
 
 Does the opening decide the game? This project measures how much each phase of a chess game (opening,
 middlegame, endgame) tells us about the result once player strength is accounted for, and models how the
@@ -11,6 +12,11 @@ The full research plan is in [docs/PLAN.md](docs/PLAN.md). Results on 9.8 millio
 table and figure. A dissertation-style report will be in `report/`.
 
 ## Dashboard
+
+**Live demo: https://chess-strategy-analytics.streamlit.app** (no installation needed; the Ask tab there shows
+explanations, figures and boards, and writes full answers when run locally with Ollama).
+
+To run it yourself:
 
 ```bash
 pip install -r requirements-app.txt
