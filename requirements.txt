@@ -10,5 +10,5 @@ ruptures>=1.1
 matplotlib>=3.8
 scikit-learn>=1.8,<1.9  # saved models in models/ are tied to this minor version
 streamlit>=1.50
-altair>=5
+altair>=6.3.0
 pyyaml>=6
