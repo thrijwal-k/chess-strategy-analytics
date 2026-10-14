@@ -1,7 +1,7 @@
 # Dashboard image: serves app.py on port 8501. Contains the app, the summary tables, the explainer and its knowledge
 # base, and the saved result models; no game data. The explainer answers from its sources on its own, or uses a local Ollama model if OLLAMA_URL
 # points to one (for example http://host.docker.internal:11434).
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
